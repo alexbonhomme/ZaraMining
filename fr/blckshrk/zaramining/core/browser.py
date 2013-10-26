@@ -14,10 +14,11 @@ class Browser(object):
     @param page: Just a string with html code
     '''
     def __init__(self, page):
+        self.dl = Downloader()
         self.soup = BeautifulSoup(page)
 
     def goTo(self, url):
-        page = Downloader().getFile(url)
+        page = self.dl.getFile(url)
         self.soup = BeautifulSoup(page)
 
     '''
@@ -54,6 +55,7 @@ class Browser(object):
         dummy = []
         for product in product_list_info:
             product_link = product.find('a')
+
             dummy.append({'name': product_link.get_text(),
                           'url': product_link.get('href')})
 
@@ -62,17 +64,28 @@ class Browser(object):
     '''
     Product page parsing
     '''
-
     '''
-    @warning: May returned None
+    @warning: May do not have a return value
     @return: 
     '''
     def getProductImageLink(self):
         container = self.soup.find('div', attrs = {'class': 'bigImageContainer'})
 
         try:
-            imageSrc = container.find('div', attrs = {'class': 'plain'}).find('img', attrs = {'class': 'image-big'}).get('src')
+            imageSrc = container.find('div', attrs = {'class': 'plain'}) \
+                                .find('img', attrs = {'class': 'image-big'}) \
+                                .get('src')
             return 'http:' + imageSrc
 
         except AttributeError:
             print('No image found for this product.')
+
+    def getProductColor(self):
+        container = self.soup.find('form', attrs = {'name': 'itemAdd'}) \
+                             .find('div', attrs = {'class': 'colors'}) \
+                             .find('label', attrs = {'class': 'selected'})
+        color_name = container.find('span').get_text()
+        color_value = container.get('data-colorcode')
+
+        return {'name': color_name, 'value': color_value}
+

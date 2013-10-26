@@ -41,6 +41,12 @@ class Main(object):
         i = 0
         for item in browser.getProductsList():
             browser.goTo(item['url'])
+
+            # DEBUG
+            color = browser.getProductColor()
+            print(color['name'] + ': ' + color['value'])
+
+
             imgUrl = browser.getProductImageLink()
             imgFilename = str(i) + '-' + item['name']
 

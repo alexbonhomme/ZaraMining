@@ -4,7 +4,7 @@ Created on 26 oct. 2013
 @author: Alexandre Bonhomme
 '''
 from flask import Flask, json
-from fr.blckshrk.zaramining.main import Main
+from wsgi.fr.blckshrk.zaramining.main import Main
 import os
 
 app = Flask(__name__)

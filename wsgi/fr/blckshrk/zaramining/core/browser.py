@@ -5,7 +5,7 @@ Created on 24 oct. 2013
 '''
 
 from bs4 import BeautifulSoup
-from fr.blckshrk.zaramining.core.downloader import Downloader
+from wsgi.fr.blckshrk.zaramining.core.downloader import Downloader
 import logging as log
 import re
 
@@ -83,7 +83,10 @@ class Browser(object):
         except AttributeError:
             log.warning('No image found for this product.')
         else:
-            return 'http:' + imageSrc
+            if not re.match('^http://', imageSrc, re.I):
+                return 'http:' + imageSrc
+            else:
+                return imageSrc
 
     def getProductColor(self):
         container = self.soup.find('form', attrs = {'name': 'itemAdd'}) \

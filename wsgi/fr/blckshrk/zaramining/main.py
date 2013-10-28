@@ -3,8 +3,8 @@ Created on 24 oct. 2013
 
 @author: Alexandre Bonhomme
 '''
-from fr.blckshrk.zaramining.core.browser import Browser
-from fr.blckshrk.zaramining.core.downloader import Downloader
+from wsgi.fr.blckshrk.zaramining.core.browser import Browser
+from wsgi.fr.blckshrk.zaramining.core.downloader import Downloader
 import errno
 import logging as log
 import os
@@ -49,7 +49,7 @@ class Main(object):
             try:
                 browser.goTo(item['url'])
             except:
-                log.warning("Unable to download this page. Omitting.")
+                log.warning("Unable to download '" + item['name'] + "'. Omitting.")
                 continue
 
             imgUrl = browser.getProductImageLink()

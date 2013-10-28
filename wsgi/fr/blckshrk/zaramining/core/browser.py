@@ -4,8 +4,9 @@ Created on 24 oct. 2013
 @author: Alexandre Bonhomme
 '''
 
-from fr.blckshrk.zaramining.core.downloader import Downloader
 from bs4 import BeautifulSoup
+from fr.blckshrk.zaramining.core.downloader import Downloader
+import logging as log
 import re
 
 class Browser(object):
@@ -18,8 +19,12 @@ class Browser(object):
         self.soup = BeautifulSoup(page)
 
     def goTo(self, url):
-        page = self.dl.getFile(url)
-        self.soup = BeautifulSoup(page)
+        try:
+            page = self.dl.getFile(url)
+        except:
+            raise
+        else:
+            self.soup = BeautifulSoup(page)
 
     '''
     Menu section parsing
@@ -41,7 +46,7 @@ class Browser(object):
 
     def getMenuLinkFromName(self, name):
         menu = self.getMenu()
-        link = menu.find('a', text = re.compile(name)).get('href')
+        link = menu.find('a', text = re.compile(r'\s+' + name, re.I)).get('href')
 
         return link
 
@@ -75,10 +80,10 @@ class Browser(object):
             imageSrc = container.find('div', attrs = {'class': 'plain'}) \
                                 .find('img', attrs = {'class': 'image-big'}) \
                                 .get('src')
-            return 'http:' + imageSrc
-
         except AttributeError:
-            print('No image found for this product.')
+            log.warning('No image found for this product.')
+        else:
+            return 'http:' + imageSrc
 
     def getProductColor(self):
         container = self.soup.find('form', attrs = {'name': 'itemAdd'}) \

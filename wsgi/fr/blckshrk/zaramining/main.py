@@ -23,12 +23,12 @@ class Main(object):
     '''
     Fills database with products from scraping
     '''
-    def fillDataBase(self, itemList):
+    def fillDataBase(self, productList):
         db = DBConnector('dressyourself.db')
         db.open()
 
-        for item in itemList:
-            pass
+        for product in productList:
+            db.insertProduct(product)
 
         db.close()
 '''

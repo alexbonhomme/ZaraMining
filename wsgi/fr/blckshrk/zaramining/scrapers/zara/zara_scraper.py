@@ -9,6 +9,7 @@ from wsgi.fr.blckshrk.zaramining.scrapers.scraper import Scraper
 import errno
 import logging as log
 import os
+from wsgi.fr.blckshrk.zaramining.core.product import Product
 
 class ZaraScrape(Scraper):
 
@@ -64,10 +65,13 @@ class ZaraScrape(Scraper):
 
                 color = browser.getProductColor()
 
+                '''
                 itemList.append({'name': item['name'],
                                  'color': color,
                                  'path': self.dl_folder + imgFilename,
                                  'url': imgUrl})
+                '''
+                itemList.append(Product(item['name'], color, imgUrl))
 
                 i += 1
             else:

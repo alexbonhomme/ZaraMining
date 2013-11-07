@@ -3,13 +3,13 @@ Created on 7 nov. 2013
 
 @author: Alexandre Bonhomme
 '''
-from wsgi.fr.blckshrk.zaramining.core.browser import Browser
 from wsgi.fr.blckshrk.zaramining.core.downloader import Downloader
+from wsgi.fr.blckshrk.zaramining.core.product import Product
 from wsgi.fr.blckshrk.zaramining.scrapers.scraper import Scraper
+from wsgi.fr.blckshrk.zaramining.scrapers.zara.zara_browser import ZaraBrowser
 import errno
 import logging as log
 import os
-from wsgi.fr.blckshrk.zaramining.core.product import Product
 
 class ZaraScrape(Scraper):
 
@@ -35,10 +35,10 @@ class ZaraScrape(Scraper):
         Perfom the scraping on Zara website
     '''
     def run(self, download = False):
-        log.info('-- Starting download --')
+        log.info('-- Starting scraping --')
 
         home = self.dl.getFile(self.PAGE_BASE + self.lang + '/')
-        browser = Browser(home)
+        browser = ZaraBrowser(home)
 
         url = browser.getMenuLinkFromName(self.section)
         browser.goTo(url)
@@ -77,7 +77,7 @@ class ZaraScrape(Scraper):
             else:
                 log.info('Omitting ' + imgFilename + '.')
 
-        log.info('-- Ending download --')
-        log.info('-- ' + str(i) + ' images was downloaded --')
+        log.info('-- Ending scraping --')
+        log.info('-- ' + str(i) + ' images was scraped --')
 
         return itemList

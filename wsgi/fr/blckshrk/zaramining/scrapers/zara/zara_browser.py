@@ -6,10 +6,11 @@ Created on 24 oct. 2013
 
 from bs4 import BeautifulSoup
 from wsgi.fr.blckshrk.zaramining.core.downloader import Downloader
+from wsgi.fr.blckshrk.zaramining.scrapers.browser import Browser
 import logging as log
 import re
 
-class Browser(object):
+class ZaraBrowser(Browser):
 
     '''
     @param page: Just a string with html code

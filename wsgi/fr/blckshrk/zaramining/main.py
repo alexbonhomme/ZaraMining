@@ -3,7 +3,7 @@ Created on 24 oct. 2013
 
 @author: Alexandre Bonhomme
 '''
-from wsgi.fr.blckshrk.zaramining.core.database import DBHelper
+from wsgi.fr.blckshrk.zaramining.core.dbhelper import DBHelper
 from wsgi.fr.blckshrk.zaramining.scrapers.zara.zara_scraper import ZaraScrape
 import logging as log
 import sys
@@ -11,26 +11,29 @@ import sys
 class Main(object):
 
     def __init__(self):
-        self.scaper = ZaraScrape('fr', 'homme', 'jeans')
+        self.scraper = ZaraScrape('fr', 'homme', 'basiques')
 
     '''
     Run scraping and fills the database
     '''
     def run(self):
-        itemList = self.scraper.run(True);
+        itemList = self.scraper.run();
         self.fillDataBase(itemList)
 
     '''
     Fills database with products from scraping
     '''
     def fillDataBase(self, productList):
+        log.info('-- Opening database --')
         db = DBHelper('dressyourself.db')
         db.open()
         db.createDataBase()
 
+        log.info('-- Starting insertions to database --')
         for product in productList:
             db.insertProduct(product)
 
+        log.info('-- Closing database --')
         db.close()
 '''
 Main

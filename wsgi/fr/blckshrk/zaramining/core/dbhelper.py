@@ -6,7 +6,7 @@ Created on 7 nov. 2013
 
 import sqlite3 as lite
 
-class DBConnector:
+class DBHelper:
 
     def __init__(self, dbfilename):
         self.dbfilename = dbfilename

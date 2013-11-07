@@ -3,7 +3,7 @@ Created on 24 oct. 2013
 
 @author: Alexandre Bonhomme
 '''
-from wsgi.fr.blckshrk.zaramining.core.database import DBConnector
+from wsgi.fr.blckshrk.zaramining.core.database import DBHelper
 from wsgi.fr.blckshrk.zaramining.scrapers.zara.zara_scraper import ZaraScrape
 import logging as log
 import sys
@@ -24,8 +24,9 @@ class Main(object):
     Fills database with products from scraping
     '''
     def fillDataBase(self, productList):
-        db = DBConnector('dressyourself.db')
+        db = DBHelper('dressyourself.db')
         db.open()
+        db.createDataBase()
 
         for product in productList:
             db.insertProduct(product)

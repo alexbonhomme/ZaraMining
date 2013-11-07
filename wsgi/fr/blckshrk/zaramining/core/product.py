@@ -3,6 +3,7 @@ Created on 7 nov. 2013
 
 @author: Alexandre Bonhomme
 '''
+from wsgi.fr.blckshrk.zaramining.core.downloader import Downloader
 
 class Product(object):
     '''
@@ -19,3 +20,5 @@ class Product(object):
         self.bodies = None
         self.weatherList = []
 
+    def getImage(self):
+        return Downloader().getFile(self.imgUrl)

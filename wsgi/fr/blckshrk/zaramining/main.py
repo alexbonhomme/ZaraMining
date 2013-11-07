@@ -9,6 +9,7 @@ import errno
 import logging as log
 import os
 import sys
+from wsgi.fr.blckshrk.zaramining.core.database import DBConnector
 
 class Main(object):
 
@@ -31,7 +32,15 @@ class Main(object):
 
         self.dl = Downloader()
 
-    def run(self, download = False):
+    def run(self, bDownload = False):
+        # itemList = self.doScraping(bDownload);
+        itemList = []
+        self.fillDataBase(itemList)
+
+    '''
+        Perfom the scraping on Zara website
+    '''
+    def doScraping(self, download = False):
         log.info('-- Starting download --')
 
         home = self.dl.getFile(self.PAGE_BASE + self.lang + '/')
@@ -76,6 +85,17 @@ class Main(object):
 
         return itemList
 
+    '''
+    
+    '''
+    def fillDataBase(self, itemList):
+        db = DBConnector('dressyourself.db')
+        db.open()
+
+        db.close()
+'''
+
+'''
 if __name__ == '__main__':
     log.basicConfig(level = log.DEBUG)
 

@@ -25,7 +25,7 @@ class Main(object):
     '''
     def fillDataBase(self, productList):
         log.info('-- Opening database --')
-        db = DBHelper('dressyourself.db')
+        db = DBHelper('dressyourself.sqlite')
         db.open()
         db.createDataBase()
 

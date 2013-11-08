@@ -58,24 +58,19 @@ class ZaraScrape(Scraper):
             imgUrl = browser.getProductImageLink()
             imgFilename = str(i) + '-' + item['name']
 
-            if imgUrl is not None:
-                if download:
-                    log.info('Downloading ' + imgFilename + '...')
-                    self.dl.writeFile(imgUrl, self.dl_folder + imgFilename)
-
-                color = browser.getProductColor()
-
-                '''
-                itemList.append({'name': item['name'],
-                                 'color': color,
-                                 'path': self.dl_folder + imgFilename,
-                                 'url': imgUrl})
-                '''
-                itemList.append(Product(item['name'], color, imgUrl))
-
-                i += 1
-            else:
+            if imgUrl is None:
                 log.info('Omitting ' + imgFilename + '.')
+                continue
+
+            if download:
+                log.info('Downloading ' + imgFilename + '...')
+                self.dl.writeFile(imgUrl, self.dl_folder + imgFilename)
+
+            color = browser.getProductColor()
+
+            itemList.append(Product(item['name'], color, imgUrl))
+
+            i += 1
 
         log.info('-- Ending scraping --')
         log.info('-- ' + str(i) + ' images was scraped --')

@@ -4,7 +4,7 @@ Created on 24 oct. 2013
 @author: Alexandre Bonhomme
 '''
 
-from urllib.error import URLError
+from urllib.error import HTTPError
 from urllib.request import urlopen
 import logging as log
 import sys
@@ -13,13 +13,17 @@ import sys
 class Downloader(object):
 
     def getFile(self, url):
+        if url is None:
+            log.warning('Empty URL')
+            raise TypeError
+
         try:
             response = urlopen(url)
-        except URLError as e:
-            log.error('URL error({0}): {1}'.format(e.errno, e.strerror))
+        except HTTPError as e:
+            log.error('HTTPError error({0}): {1}'.format(e.errno, e.strerror))
             raise
         except:
-            log.exception("Unexpected error:", sys.exc_info()[0])
+            log.exception('Unexpected error:', sys.exc_info()[0])
             raise
         else:
             return response.read()

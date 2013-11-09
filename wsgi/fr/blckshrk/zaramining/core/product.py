@@ -10,10 +10,10 @@ class Product(object):
     Class which describe a product like in Dress Yourself arch.
     '''
 
-    def __init__(self, modelName, color, imgUrl):
+    def __init__(self, modelName, brandName, color, imgUrl):
         self.id = None
         self.model = modelName
-        self.brand = None
+        self.brand = brandName
         self.color = color
         self.imgUrl = imgUrl
         self.type = None

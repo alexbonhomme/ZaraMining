@@ -42,7 +42,7 @@ class DBHelper:
             self.cursor.execute("CREATE TABLE IF NOT EXISTS WEATHER_CLOTHES (ID_c INTEGER,ID_w INTEGER,PRIMARY KEY (ID_c,ID_w),FOREIGN KEY (ID_c)REFERENCES CLOTHES (ID_clothes),FOREIGN KEY (ID_w)REFERENCES WEATHER (ID_weather))")
             self.cursor.execute("CREATE TABLE IF NOT EXISTS OUTFIT (ID_outfit INTEGER PRIMARY KEY AUTOINCREMENT,outfitName TEXT)")
             self.cursor.execute("CREATE TABLE IF NOT EXISTS OUTFIT_CLOTHES (ID_c INTEGER,ID_o INTEGER,PRIMARY KEY (ID_c,ID_o),FOREIGN KEY (ID_c)REFERENCES CLOTHES (ID_clothes),FOREIGN KEY (ID_o)REFERENCES OUTFIT (ID_outfit))")
-            self.cursor.execute("CREATE TABLE IF NOT EXISTS BRAND (ID_brand INTEGER PRIMARY KEY AUTOINCREMENT,brandName TEXT)")
+            self.cursor.execute("CREATE TABLE IF NOT EXISTS BRAND (ID_brand INTEGER PRIMARY KEY AUTOINCREMENT, brandName TEXT UNIQUE)")
 
             self.connection.commit()
         except sqlite.DatabaseError as e:
@@ -50,14 +50,20 @@ class DBHelper:
             raise
 
     def insertProduct(self, product):
+        log.debug('Insert color (if not exist) "' + product.brand + '" to BRAND table')
+        self.cursor.execute('INSERT OR IGNORE INTO brand (brandName) VALUES (?)', (product.brand,))
+        self.cursor.execute('SELECT ID_brand FROM brand WHERE brandName = "' + product.brand + '"')
+        brandId = self.cursor.fetchone()[0]
+
         log.debug('Insert color (if not exist) "' + product.color['name'] + '" to COLOR table')
         self.cursor.execute('INSERT OR IGNORE INTO color (colorName) VALUES (?)', (product.color['name'],))
-        colorId = self.cursor.lastrowid
+        self.cursor.execute('SELECT ID_color FROM color WHERE colorName = "' + product.color['name'] + '"')
+        colorId = self.cursor.fetchone()[0]
 
         log.debug('Insert product "' + product.model + '" to CLOTHES table')
         values = (product.model,
                   sqlite.Binary(product.getImage()),
                   colorId,
                   0, # product.type,
-                  0) # product.brand)
+                  brandId)
         self.cursor.execute('INSERT INTO clothes (model, image, ID_c, ID_t, ID_br) VALUES (?, ?, ?, ?, ?)', values)

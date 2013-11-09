@@ -13,6 +13,7 @@ import os
 
 class ZaraScrape(Scraper):
 
+    BRAND_NAME = 'Zara'
     PAGE_BASE = 'http://www.zara.com/fr/'
 
     def __init__(self, lang, section, subsection):
@@ -56,20 +57,18 @@ class ZaraScrape(Scraper):
                 continue
 
             imgUrl = browser.getProductImageLink()
-            imgFilename = str(i) + '-' + item['name']
-
             if imgUrl is None:
-                log.info('Omitting ' + imgFilename + '.')
+                log.info('Unable to get product image for "' + item['name'] + '". Omitting.')
                 continue
 
             if download:
+                imgFilename = str(i) + '-' + item['name']
                 log.info('Downloading ' + imgFilename + '...')
                 self.dl.writeFile(imgUrl, self.dl_folder + imgFilename)
 
             color = browser.getProductColor()
 
-            itemList.append(Product(item['name'], color, imgUrl))
-
+            itemList.append(Product(item['name'], self.BRAND_NAME, color, imgUrl))
             i += 1
 
         log.info('-- Ending scraping --')

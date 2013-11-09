@@ -6,9 +6,12 @@ Created on 24 oct. 2013
 from wsgi.fr.blckshrk.zaramining.core.dbhelper import DBHelper
 from wsgi.fr.blckshrk.zaramining.scrapers.zara.zara_scraper import ZaraScrape
 import logging as log
+import os
 import sys
 
 class Main(object):
+
+    SQL_DATABASE_PATH = 'dressyourself.sqlite'
 
     def __init__(self):
         self.scraper = ZaraScrape('fr', 'homme', 'basiques')
@@ -24,8 +27,14 @@ class Main(object):
     Fills database with products from scraping
     '''
     def fillDataBase(self, productList):
+        log.info('-- Removing old database --')
+        try:
+            os.remove(self.SQL_DATABASE_PATH)
+        except:
+            pass
+
         log.info('-- Opening database --')
-        db = DBHelper('dressyourself.sqlite')
+        db = DBHelper(self.SQL_DATABASE_PATH)
         db.open()
         db.createDataBase()
 

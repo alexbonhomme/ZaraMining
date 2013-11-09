@@ -14,13 +14,52 @@ class Main(object):
     SQL_DATABASE_PATH = 'dressyourself.sqlite'
 
     def __init__(self):
-        self.scraper = ZaraScrape('fr')
+        self.scraper = ZaraScrape('en')
+
+        log.info('-- Removing old database --')
+        try:
+            os.remove(self.SQL_DATABASE_PATH)
+        except:
+            pass
+
+        self.db = DBHelper(self.SQL_DATABASE_PATH)
+        self.db.open()
+        self.db.createDataBaseTablesIfNotExists()
+        self.db.close()
 
     '''
     Run scraping and fills the database
     '''
     def run(self):
-        self.scraper.setConfig('homme', 'jeans', 'Jeans', 'Bottom')
+        self.scraper.setConfig('man', 'jeans', 'Jean', 'Bottom')
+        itemList = self.scraper.run();
+        self.fillDataBase(itemList)
+
+        self.scraper.setConfig('man', 'sweatshirts', 'Sweat-shirt', 'Top')
+        itemList = self.scraper.run();
+        self.fillDataBase(itemList)
+
+        self.scraper.setConfig('man', 'knitwear', 'Knitwears', 'Top')
+        itemList = self.scraper.run();
+        self.fillDataBase(itemList)
+
+        self.scraper.setConfig('man', 'shoes', 'Shoes', 'Shoes')
+        itemList = self.scraper.run();
+        self.fillDataBase(itemList)
+
+        self.scraper.setConfig('woman', 'jeans', 'Jean', 'Bottom')
+        itemList = self.scraper.run();
+        self.fillDataBase(itemList)
+
+        self.scraper.setConfig('woman', 'skirts', 'Skirt', 'Bottom')
+        itemList = self.scraper.run();
+        self.fillDataBase(itemList)
+
+        self.scraper.setConfig('woman', 'knitwear', 'Knitwears', 'Top')
+        itemList = self.scraper.run();
+        self.fillDataBase(itemList)
+
+        self.scraper.setConfig('woman', 'shoes', 'Shoes', 'Shoes')
         itemList = self.scraper.run();
         self.fillDataBase(itemList)
 
@@ -28,23 +67,14 @@ class Main(object):
     Fills database with products from scraping
     '''
     def fillDataBase(self, productList):
-        log.info('-- Removing old database --')
-        try:
-            os.remove(self.SQL_DATABASE_PATH)
-        except:
-            pass
-
-        log.info('-- Opening database --')
-        db = DBHelper(self.SQL_DATABASE_PATH)
-        db.open()
-        db.createDataBase()
+        self.db.open()
 
         log.info('-- Starting insertions to database --')
         for product in productList:
-            db.insertProduct(product)
+            self.db.insertProduct(product)
 
-        log.info('-- Closing database --')
-        db.close()
+        self.db.close()
+
 '''
 Main
 '''

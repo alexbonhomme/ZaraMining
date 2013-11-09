@@ -44,7 +44,6 @@ class ZaraBrowser(Browser):
 
         return entries
 
-
     def getMenuLinkFromName(self, name):
         menu = self.getMenu()
         link = menu.find('a', text = re.compile(r'\s+' + name, re.I)).get('href')
@@ -62,7 +61,6 @@ class ZaraBrowser(Browser):
         for product in product_list_info:
             product_link = product.find('a')
 
-            # log.debug(product_link)
             dummy.append({'name': product_link.get_text(),
                           'url': product_link.get('href')})
 

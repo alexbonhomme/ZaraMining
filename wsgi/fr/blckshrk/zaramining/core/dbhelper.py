@@ -14,6 +14,7 @@ class DBHelper:
         self.dbfilename = dbfilename
 
     def open(self):
+        log.debug('-- Opening database --')
         try:
             self.connection = sqlite.connect(self.dbfilename)
             self.cursor = self.connection.cursor()
@@ -24,15 +25,18 @@ class DBHelper:
             return self.cursor
 
     def close(self):
+        log.debug('-- Closing database --')
         if self.connection:
             self.connection.commit()
             self.connection.close()
 
     def commit(self):
+        log.debug('-- Commiting changes --')
         if self.connection:
             self.connection.commit()
 
-    def createDataBase(self):
+    def createDataBaseTablesIfNotExists(self):
+        log.info('-- Creating tables --')
         try:
             self.cursor.execute("CREATE TABLE IF NOT EXISTS COLOR (ID_color INTEGER PRIMARY KEY AUTOINCREMENT, colorName TEXT UNIQUE)")
             self.cursor.execute("CREATE TABLE IF NOT EXISTS BODIES (ID_bodies INTEGER PRIMARY KEY AUTOINCREMENT, bodiesName TEXT UNIQUE)")

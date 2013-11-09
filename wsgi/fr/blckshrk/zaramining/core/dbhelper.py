@@ -63,20 +63,30 @@ class DBHelper:
 
         return self.cursor.fetchone()[0]
 
-    def _insertType(self, typeName):
-        pass
+    def _insertType(self, typeName, bodiesId):
+        log.debug('Insert type (if not exist) "' + typeName + '" to TYPE table')
+        self.cursor.execute('INSERT OR IGNORE INTO type (typeName, ID_b) VALUES (?, ?)', (typeName, bodiesId))
+        self.cursor.execute('SELECT ID_type FROM type WHERE typeName = "' + typeName + '"')
+
+        return self.cursor.fetchone()[0]
 
     def _insertBodies(self, bodyPartName):
-        pass
+        log.debug('Insert bodies (if not exist) "' + bodyPartName + '" to BODIES table')
+        self.cursor.execute('INSERT OR IGNORE INTO bodies (bodiesName) VALUES (?)', (bodyPartName,))
+        self.cursor.execute('SELECT ID_bodies FROM bodies WHERE bodiesName = "' + bodyPartName + '"')
+
+        return self.cursor.fetchone()[0]
 
     def insertProduct(self, product):
         brandId = self._insertBrand(product.brand)
         colorId = self._insertColor(product.color['name'])
+        bodiesId = self._insertBodies(product.bodies)
+        typeId = self._insertType(product.type, bodiesId)
 
         log.debug('Insert product "' + product.model + '" to CLOTHES table')
         values = (product.model,
                   sqlite.Binary(product.getImage()),
                   colorId,
-                  0, # product.type,
+                  typeId,
                   brandId)
         self.cursor.execute('INSERT INTO clothes (model, image, ID_c, ID_t, ID_br) VALUES (?, ?, ?, ?, ?)', values)

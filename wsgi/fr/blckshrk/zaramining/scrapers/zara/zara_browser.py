@@ -16,12 +16,12 @@ class ZaraBrowser(Browser):
     @param page: Just a string with html code
     '''
     def __init__(self, page):
-        self.dl = Downloader()
+        self.downloader = Downloader()
         self.soup = BeautifulSoup(page)
 
     def goTo(self, url):
         try:
-            page = self.dl.getFile(url)
+            page = self.downloader.getFile(url)
         except:
             raise
         else:

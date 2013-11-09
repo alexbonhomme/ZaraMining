@@ -14,12 +14,13 @@ class Main(object):
     SQL_DATABASE_PATH = 'dressyourself.sqlite'
 
     def __init__(self):
-        self.scraper = ZaraScrape('fr', 'homme', 'basiques', '', '')
+        self.scraper = ZaraScrape('fr')
 
     '''
     Run scraping and fills the database
     '''
     def run(self):
+        self.scraper.setConfig('homme', 'jeans', 'Jeans', 'Bottom')
         itemList = self.scraper.run();
         self.fillDataBase(itemList)
 

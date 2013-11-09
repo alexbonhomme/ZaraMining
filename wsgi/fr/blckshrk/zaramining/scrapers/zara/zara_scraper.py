@@ -16,10 +16,13 @@ class ZaraScrape(Scraper):
     BRAND_NAME = 'Zara'
     PAGE_BASE = 'http://www.zara.com/fr/'
 
-    def __init__(self, lang, section, subsection):
+    def __init__(self, lang, section, subsection, productType, bodyPart):
         self.lang = lang
         self.section = section
         self.subsection = subsection
+
+        self.type = productType
+        self.bodies = bodyPart
 
         self.dl_folder = self.DL_FOLDER_PATH_BASE + lang + '/' + section + '/' + subsection + '/'
 

@@ -16,11 +16,13 @@ class Main(object):
     def __init__(self):
         self.scraper = ZaraScrape('en')
 
+        '''
         log.info('-- Removing old database --')
         try:
             os.remove(self.SQL_DATABASE_PATH)
         except:
             pass
+        '''
 
         self.db = DBHelper(self.SQL_DATABASE_PATH)
         self.db.open()
@@ -44,7 +46,7 @@ class Main(object):
         self.fillDataBase(itemList)
 
         self.scraper.setConfig('man', 'shoes', 'Shoes', 'Shoes')
-        itemList = self.scraper.run();
+        itemList = self.scraper.run(usePlainImage = False);
         self.fillDataBase(itemList)
 
         self.scraper.setConfig('woman', 'jeans', 'Jean', 'Bottom')
@@ -60,7 +62,7 @@ class Main(object):
         self.fillDataBase(itemList)
 
         self.scraper.setConfig('woman', 'shoes', 'Shoes', 'Shoes')
-        itemList = self.scraper.run();
+        itemList = self.scraper.run(usePlainImage = False);
         self.fillDataBase(itemList)
 
     '''

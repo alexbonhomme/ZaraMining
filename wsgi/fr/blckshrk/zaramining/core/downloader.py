@@ -8,11 +8,11 @@ from urllib.error import HTTPError
 from urllib.request import urlopen
 import logging as log
 import sys
-
+import time
 
 class Downloader(object):
 
-    def getFile(self, url):
+    def getFile(self, url, timeRetrying = None):
         if url is None:
             log.warning('Empty URL')
             raise TypeError
@@ -20,13 +20,23 @@ class Downloader(object):
         try:
             response = urlopen(url)
         except HTTPError as e:
-            log.error('HTTPError error({0}): {1}'.format(e.errno, e.strerror))
-            raise
+            if timeRetrying is not None and timeRetrying.isdigit():
+                log.warning('Unable to get the page "{0}" ({1}): {2}. Retrying in {3}s...'.format(url, e.errno, e.strerror, timeRetrying))
+                time.sleep(timeRetrying)
+
+                try:
+                    response = urlopen(url)
+                except HTTPError as e:
+                    log.error('HTTPError error({0}): {1}. Omitting.'.format(e.errno, e.strerror))
+                    raise
+            else:
+                log.error('HTTPError error({0}): {1}'.format(e.errno, e.strerror))
+                raise
         except:
             log.exception('Unexpected error:', sys.exc_info()[0])
             raise
-        else:
-            return response.read()
+
+        return response.read()
 
     def writeFile(self, url, filename):
         try:

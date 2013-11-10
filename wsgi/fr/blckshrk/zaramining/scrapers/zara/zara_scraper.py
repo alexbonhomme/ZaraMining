@@ -10,6 +10,7 @@ from wsgi.fr.blckshrk.zaramining.scrapers.zara.zara_browser import ZaraBrowser
 import errno
 import logging as log
 import os
+import time
 
 class ZaraScrape(Scraper):
 
@@ -37,30 +38,41 @@ class ZaraScrape(Scraper):
     '''
         Perfom the scraping on Zara website
     '''
-    def run(self, download = False):
+    def run(self, usePlainImage = True, download = False):
         log.info('-- Starting scraping --')
 
         home = self.downloader.getFile(self.PAGE_BASE + self.lang + '/')
         browser = ZaraBrowser(home)
 
         url = browser.getMenuLinkFromName(self.section)
-        browser.goTo(url)
+        try:
+            browser.goTo(url, 5)
+        except:
+            log.warning("Unable to get the page '" + url + "'. Omitting.")
+            return []
 
         url = browser.getMenuLinkFromName(self.subsection)
-        browser.goTo(url)
+        try:
+            browser.goTo(url, 5)
+        except:
+            log.warning("Unable to get the page '" + url + "'. Omitting.")
+            return []
 
         i = 0
         itemList = []
         for item in browser.getProductsList():
+            log.debug('zzZZZZzzz')
+            time.sleep(5) # let's do it cool
+
             try:
                 browser.goTo(item['url'])
             except:
-                log.warning("Unable to download '" + item['name'] + "'. Omitting.")
+                log.warning("FAIL : Unable to download '" + item['name'] + "'. Omitting.")
                 continue
 
-            imgUrl = browser.getProductImageLink()
+            imgUrl = browser.getProductImageLink(usePlainImage)
             if imgUrl is None:
-                log.info('Unable to get product image for "' + item['name'] + '". Omitting.')
+                log.info('FAIL : Unable to get product image for "' + item['name'] + '". Omitting.')
                 continue
 
             if download:
@@ -70,6 +82,7 @@ class ZaraScrape(Scraper):
 
             color = browser.getProductColor()
 
+            log.info('SUCCES : Product "' + item['name'] + '" scraping done.')
             itemList.append(Product(item['name'], self.BRAND_NAME, color, imgUrl, self.type, self.bodies))
             i += 1
 

@@ -19,9 +19,9 @@ class ZaraBrowser(Browser):
         self.downloader = Downloader()
         self.soup = BeautifulSoup(page)
 
-    def goTo(self, url):
+    def goTo(self, url, timeRetrying = None):
         try:
-            page = self.downloader.getFile(url)
+            page = self.downloader.getFile(url, timeRetrying)
         except:
             raise
         else:
@@ -69,11 +69,17 @@ class ZaraBrowser(Browser):
     '''
     Product page parsing
     '''
+    def getProductImageLink(self, usePlainImage):
+        if usePlainImage:
+            return self.getProductPlainImageLink()
+        else:
+            return self.getProductFullImageLink()
+
     '''
     @warning: May do not have a return value
-    @return: 
+    @return: 'plain' image or None
     '''
-    def getProductImageLink(self):
+    def getProductPlainImageLink(self):
         container = self.soup.find('div', attrs = {'class': 'bigImageContainer'})
 
         try:
@@ -81,7 +87,26 @@ class ZaraBrowser(Browser):
                                 .find('img', attrs = {'class': 'image-big'}) \
                                 .get('src')
         except AttributeError:
-            log.warning('No image found for this product.')
+            log.warning('No "plain" image found for this product.')
+        else:
+            if not re.match('^http://', imageSrc, re.I):
+                return 'http:' + imageSrc
+            else:
+                return imageSrc
+
+    '''
+    @warning: May do not have a return value
+    @return: 'full' image or None
+    '''
+    def getProductFullImageLink(self):
+        container = self.soup.find('div', attrs = {'class': 'bigImageContainer'})
+
+        try:
+            imageSrc = container.find('div', attrs = {'class': 'full'}) \
+                                .find('img', attrs = {'class': 'image-big'}) \
+                                .get('src')
+        except AttributeError:
+            log.warning('No "full" image found for this product.')
         else:
             if not re.match('^http://', imageSrc, re.I):
                 return 'http:' + imageSrc
